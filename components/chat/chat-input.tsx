@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function ChatInput() {
+export function ChatInput() {
   const [symptom, setSymptom] = useState('');
   const [history, setHistory] = useState('');
   const [concerns, setConcerns] = useState('');
