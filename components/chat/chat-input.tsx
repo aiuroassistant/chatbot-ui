@@ -1,15 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useChatStore } from '@/store/chat';
-import { useEnterSubmit } from '@/lib/hooks/use-enter-submit';
 
 export default function ChatInput() {
   const [symptom, setSymptom] = useState('');
   const [history, setHistory] = useState('');
   const [concerns, setConcerns] = useState('');
-  const { appendMessage } = useChatStore();
-  const { formRef, onKeyDown } = useEnterSubmit();
+  const [messages, setMessages] = useState<string[]>([]);
 
   const generatePrompt = () => {
     return `
@@ -30,10 +27,10 @@ Please provide:
     `;
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const prompt = generatePrompt();
-    appendMessage({ role: 'user', content: prompt });
+    setMessages((prevMessages) => [...prevMessages, prompt]);
     setSymptom('');
     setHistory('');
     setConcerns('');
@@ -42,7 +39,7 @@ Please provide:
   return (
     <div className="px-4 py-2 border-t">
       <h2 className="text-xl font-bold mb-4">Nurse Triage Assistant</h2>
-      <form onSubmit={handleSubmit} ref={formRef} className="flex flex-col space-y-3">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
         <input
           type="text"
           placeholder="What symptom is the patient reporting?"
