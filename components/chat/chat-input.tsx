@@ -1,31 +1,41 @@
 'use client';
 
 import { useState } from 'react';
-import { useChatStore } from '@/store/chat';
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit';
+import { useChatStore } from '@/store/chat';
 
 export default function ChatInput() {
-  const [symptom, setSymptom] = useState('');
-  const [history, setHistory] = useState('');
-  const [concerns, setConcerns] = useState('');
+  const [input, setInput] = useState('');
   const { appendMessage } = useChatStore();
   const { formRef, onKeyDown } = useEnterSubmit();
 
-  const generatePrompt = () => {
-    return `
-Patient Symptom Description: ${symptom}
-Relevant Recent Procedure / History: ${history}
-Concerning Symptoms: ${concerns}
-
-Please provide:
-1. A concise Clinical Recommendation (1-2 sentences)
-2. A clear Patient Message (as if for MyChart or call-back)
-3. An EMR Note ready for copy-paste into chart
-
-**Disclaimer:** This response was generated with AI assistance based on provided clinical details and internal protocols. Final clinical decisions should be made by a licensed healthcare provider.
-    `;
-  };
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const prompt = generatePrompt();
+    if (!input.trim()) return;
+
+    appendMessage({ role: 'user', content: input.trim() });
+    setInput('');
+  };
+
+  return (
+    <div className="px-4 py-2 border-t">
+      <form onSubmit={handleSubmit} ref={formRef} className="flex flex-row gap-3">
+        <input
+          className="flex-grow p-2 border rounded"
+          type="text"
+          placeholder="Send a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={onKeyDown}
+          required
+        />
+        <button
+          type="submit"
+          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  );
+}
