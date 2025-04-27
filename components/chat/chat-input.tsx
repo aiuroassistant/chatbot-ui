@@ -8,31 +8,36 @@ export function ChatInput() {
   const [concerns, setConcerns] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
 
+  const generatePrompt = () => {
+    return [
+      'You are a Nurse Triage Assistant for a Urology clinic.',
+      '',
+      'Base your responses on these clinic protocols:',
+      '- Hematuria after stent removal: monitor unless clot retention or fever.',
+      '- Urinary retention post-surgery: advise immediate ER visit.',
+      '- Mild urinary urgency/frequency: monitor, avoid caffeine.',
+      '- Constipation post-op: manage with OTC meds unless severe pain/obstruction signs.',
+      '- Stent discomfort: manage with hydration, bladder relaxants unless fever/obstruction.',
+      '',
+      `Patient Details:`,
+      `- Symptom: ${symptom}`,
+      `- Relevant History/Procedure: ${history}`,
+      `- Concerning Symptoms: ${concerns}`,
+      '',
+      'Please generate:',
+      '1. Clinical Recommendation (1-2 sentences)',
+      '2. Patient Message (for call/MyChart)',
+      '3. EMR Note (for documentation)',
+      '',
+      '---',
+      '**Disclaimer:** This response was generated with AI assistance based on clinic protocols. Final clinical decisions are made by licensed healthcare providers.'
+    ].join('\n');
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const prompt = `
-You are a Nurse Triage Assistant for a Urology clinic.
-Base your responses on these clinic protocols:
-- Hematuria after stent removal: monitor unless clot retention or fever.
-- Urinary retention post-surgery: advise immediate ER visit.
-- Mild urinary urgency/frequency: monitor, avoid caffeine.
-- Constipation post-op: manage with OTC meds unless severe pain/obstruction signs.
-- Stent discomfort: manage with hydration, bladder relaxants unless fever/obstruction.
-
-Patient Details:
-- Symptom: ${symptom}
-- Relevant History/Procedure: ${history}
-- Concerning Symptoms: ${concerns}
-
-Please generate:
-1. Clinical Recommendation (1-2 sentences)
-2. Patient Message (for call/MyChart)
-3. EMR Note (for documentation)
-
----
-**Disclaimer:** This response was generated with AI assistance based on clinic protocols. Final clinical decisions are made by licensed healthcare providers.
-`;
-    setMessages(prev => [...prev, prompt]);
+    const prompt = generatePrompt();
+    setMessages((prev) => [...prev, prompt]);
     setSymptom('');
     setHistory('');
     setConcerns('');
@@ -51,6 +56,7 @@ Please generate:
           View Quickstart Guide
         </a>
       </p>
+
       <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
         <input
           type="text"
@@ -83,9 +89,20 @@ Please generate:
           Generate
         </button>
       </form>
+
       <div className="mt-6 space-y-6">
         {messages.map((message, idx) => (
           <div key={idx} className="border p-4 rounded">
             <p className="whitespace-pre-line">{message}</p>
             <button
-              onClick={() => handleCopy(message
+              onClick={() => handleCopy(message)}
+              className="mt-2 p-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Copy All
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
