@@ -10,8 +10,8 @@ export function ChatInput() {
 
   const generatePrompt = () => {
     return `
-You are a Nurse Triage Assistant for a Urology clinic. 
-Base your responses on these clinic protocols: 
+You are a Nurse Triage Assistant for a Urology clinic.
+Base your responses on these clinic protocols:
 - Hematuria after stent removal: monitor unless clot retention or fever.
 - Urinary retention post-surgery: advise immediate ER visit.
 - Mild urinary urgency/frequency: monitor, avoid caffeine.
@@ -49,4 +49,45 @@ Please generate:
   return (
     <div className="px-4 py-4">
       <h2 className="text-2xl font-bold mb-2">Nurse Triage Assistant</h2>
-      <p className="mb-4">Welcome! Please enter the patient’s information below. <a href="/quickstart.pdf" target="_blank" className_
+      <p className="mb-4">
+        Welcome! Please enter the patient’s information below.{' '}
+        <a href="/quickstart.pdf" target="_blank" className="text-blue-600 underline">
+          View Quickstart Guide
+        </a>
+      </p>
+
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
+        <input
+          type="text"
+          placeholder="What symptom is the patient reporting?"
+          value={symptom}
+          onChange={(e) => setSymptom(e.target.value)}
+          className="p-2 border rounded"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Any recent surgeries, catheters, procedures?"
+          value={history}
+          onChange={(e) => setHistory(e.target.value)}
+          className="p-2 border rounded"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Any severe symptoms like fever, clots, severe pain?"
+          value={concerns}
+          onChange={(e) => setConcerns(e.target.value)}
+          className="p-2 border rounded"
+          required
+        />
+        <button
+          type="submit"
+          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Generate
+        </button>
+      </form>
+
+      <div className="mt-6 space-y-6">
+        {messages.map((message, idx) =>
