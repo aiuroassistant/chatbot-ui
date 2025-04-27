@@ -8,8 +8,9 @@ export function ChatInput() {
   const [concerns, setConcerns] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
 
-  const generatePrompt = () => {
-    return `
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const prompt = `
 You are a Nurse Triage Assistant for a Urology clinic.
 Base your responses on these clinic protocols:
 - Hematuria after stent removal: monitor unless clot retention or fever.
@@ -30,13 +31,8 @@ Please generate:
 
 ---
 **Disclaimer:** This response was generated with AI assistance based on clinic protocols. Final clinical decisions are made by licensed healthcare providers.
-    `;
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const prompt = generatePrompt();
-    setMessages((prevMessages) => [...prevMessages, prompt]);
+`;
+    setMessages(prev => [...prev, prompt]);
     setSymptom('');
     setHistory('');
     setConcerns('');
@@ -55,7 +51,6 @@ Please generate:
           View Quickstart Guide
         </a>
       </p>
-
       <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
         <input
           type="text"
@@ -88,6 +83,9 @@ Please generate:
           Generate
         </button>
       </form>
-
       <div className="mt-6 space-y-6">
-        {messages.map((message, idx) =>
+        {messages.map((message, idx) => (
+          <div key={idx} className="border p-4 rounded">
+            <p className="whitespace-pre-line">{message}</p>
+            <button
+              onClick={() => handleCopy(message
