@@ -10,20 +10,26 @@ export function ChatInput() {
 
   const generatePrompt = () => {
     return `
-**Patient Symptom Description:** ${symptom}
+You are a Nurse Triage Assistant for a Urology clinic. 
+Base your responses on these clinic protocols: 
+- Hematuria after stent removal: monitor unless clot retention or fever.
+- Urinary retention post-surgery: advise immediate ER visit.
+- Mild urinary urgency/frequency: monitor, avoid caffeine.
+- Constipation post-op: manage with OTC meds unless severe pain/obstruction signs.
+- Stent discomfort: manage with hydration, bladder relaxants unless fever/obstruction.
 
-**Relevant Recent Procedure / History:** ${history}
+Patient Details:
+- Symptom: ${symptom}
+- Relevant History/Procedure: ${history}
+- Concerning Symptoms: ${concerns}
 
-**Concerning Symptoms (if any):** ${concerns}
+Please generate:
+1. Clinical Recommendation (1-2 sentences)
+2. Patient Message (for call/MyChart)
+3. EMR Note (for documentation)
 
 ---
-Please provide:
-1. A concise Clinical Recommendation (1-2 sentences)
-2. A clear Patient Message (as if for MyChart or call-back)
-3. An EMR Note ready for copy-paste into chart
-
----
-**Disclaimer:** This response was generated with AI assistance based on provided clinical details and internal protocols. Final clinical decisions should be made by a licensed healthcare provider.
+**Disclaimer:** This response was generated with AI assistance based on clinic protocols. Final clinical decisions are made by licensed healthcare providers.
     `;
   };
 
@@ -36,41 +42,11 @@ Please provide:
     setConcerns('');
   };
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
   return (
-    <div className="px-4 py-2 border-t">
-      <h2 className="text-xl font-bold mb-4">Nurse Triage Assistant</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
-        <input
-          type="text"
-          placeholder="What symptom is the patient reporting?"
-          value={symptom}
-          onChange={(e) => setSymptom(e.target.value)}
-          className="p-2 border rounded"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Any recent surgeries, catheters, procedures?"
-          value={history}
-          onChange={(e) => setHistory(e.target.value)}
-          className="p-2 border rounded"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Any severe symptoms like fever, blood clots, severe pain?"
-          value={concerns}
-          onChange={(e) => setConcerns(e.target.value)}
-          className="p-2 border rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Generate
-        </button>
-      </form>
-    </div>
-  );
-}
+    <div className="px-4 py-4">
+      <h2 className="text-2xl font-bold mb-2">Nurse Triage Assistant</h2>
+      <p className="mb-4">Welcome! Please enter the patient’s information below. <a href="/quickstart.pdf" target="_blank" className_
